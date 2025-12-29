@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}个人资料 - NeoShare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header">
+                <h4><i class="fas fa-user"></i> 个人资料</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="text-center mb-4">
+                        {% if current_user.avatar %}
+                            <img src="{{ url_for('files.avatar_file', filename=current_user.avatar.replace('avatar/', '')) }}" class="avatar-large mb-3" alt="Avatar">
+                        {% else %}
+                            <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">昵称</label>
+                        <input type="text" class="form-control" id="nickname" name="nickname" value="{{ current_user.nickname or current_user.username }}">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">更新资料</button>
+                </form>
+                
+                <hr class="my-4">
+                
+                <h5><i class="fas fa-image"></i> 更换头像</h5>
+                <form method="POST" action="{{ url_for('files.upload_avatar') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">选择头像</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                        <div class="form-text">支持 JPG, JPEG, PNG, GIF 格式</div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">上传头像</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}公共文件 - NeoShare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="fas fa-globe-asia"></i> 公共文件</h2>
+        <p class="text-muted">所有用户都可以访问的公共文件</p>
+    </div>
+</div>
+
+<div class="row">
+    {% if files %}
+        {% for file in files %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card file-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        {% if file.filetype == 'image' %}
+                            <i class="fas fa-file-image text-primary file-icon"></i>
+                        {% elif file.filetype == 'pdf' %}
+                            <i class="fas fa-file-pdf text-danger file-icon"></i>
+                        {% elif file.filetype == 'archive' %}
+                            <i class="fas fa-file-archive text-warning file-icon"></i>
+                        {% elif file.filetype == 'code' %}
+                            <i class="fas fa-file-code text-success file-icon"></i>
+                        {% else %}
+                            <i class="fas fa-file text-secondary file-icon"></i>
+                        {% endif %}
+                        <div>
+                            <h6 class="card-title mb-0">{{ file.filename }}</h6>
+                            <small class="text-muted">{{ file.upload_time.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            大小: {{ "%.2f"|format(file.filesize/1024/1024) }} MB
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('files.download', file_id=file.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-download"></i> 下载
+                    </a>
+                    {% if file.filetype in ['text', 'code'] %}
+                    <a href="{{ url_for('files.view_file', file_id=file.id) }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-eye"></i> 预览
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">暂无公共文件</p>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('files.upload') }}" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> 上传公共文件
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
